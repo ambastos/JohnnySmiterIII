@@ -9,9 +9,11 @@ import { Player } from './player.js';
 export class Level {
     constructor(ctx) {
         this.ctx = ctx;
-
+        /**@type Map */
         this.map = new Map(this.ctx);
+        /**@type Player */
         this.player = new Player(1800, 1800, this.map);
+        /**@type Light */
         this.light = new Light(1600, 1900);
         //this.player = new Player(1400,100,this.map);
         //this.light = new Light(1600,100);
@@ -72,13 +74,18 @@ export class Level {
             hud.innerHTML = 'X X X';
         }, 2000)
     }
+    /**
+     * This is the main loop, there is a player keypress manager
+     * to controle de speed and direction 
+     * and check collision
+     */
     loop() {
         T = performance.now();
         var ctx = this.ctx;
         ctx.save();
         ctx.scale(SCALE, SCALE);
         //var stepSpeed=10;
-        var stepSpeed = 10 * 2;
+        var stepSpeed = 30;
         var player = this.player;
         var newangle = Math.atan2(player.floorNormal[0], -player.floorNormal[1]);
         player.man.floorAngle += (newangle - player.man.floorAngle) * 0.3;
@@ -93,7 +100,7 @@ export class Level {
             }
         }
         var speed = Math.sqrt(player.velocity[0] * player.velocity[0] + player.velocity[1] * player.velocity[1]);
-        this.player.man.mag = Math.min(0.85, Math.abs(speed) / 10 * 0.5 + 0.5);
+        this.player.man.mag = Math.min(0.85, Math.abs(speed) / stepSpeed* 0.5 + 0.5);
 
         this.map.checkCollitions(this.player, this.light);
         var time = T;

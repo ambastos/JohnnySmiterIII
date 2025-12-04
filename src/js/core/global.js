@@ -1,3 +1,5 @@
+import { MessageBubble } from "../misc/messageBubble";
+
 var brick, bricksd, bricksl, bricksp, platform, hud, overlay, endmessage, SCALE = 1, SCALE2 = 1, canvas, ctx
 var DOSHADOWS = true;
 var T = performance.now();
@@ -24,4 +26,7 @@ Object.assign(globalThis, {brick, bricksd, bricksl, bricksp, platform, hud, over
 //constants
 Object.assign(globalThis, {MAP, SPIKES, SPIDERS, NUMBERS, WINDOWS, GRAVITY,
 SPIDERBOD, SPIDERLEG, MAGE, WINDOW
+})
+Object.assign(globalThis, {
+    MessageBubble
 })

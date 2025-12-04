@@ -1,8 +1,9 @@
-import { collect } from "../misc/song";
-import { Num } from "./num";
-import { ShadowBox } from "./shadowBox";
-import { Spider } from "./spider";
-import { Spikes } from "./spikes";
+import { MessageBubble } from "../misc/messageBubble.js";
+import { collect } from "../misc/song.js";
+import { Num } from "./num.js";
+import { ShadowBox } from "./shadowBox.js";
+import { Spider } from "./spider.js";
+import { Spikes } from "./spikes.js";
 
 export class Map {
     constructor(ctx) {
@@ -50,7 +51,7 @@ export class Map {
         if (player.numbersCollected == 5 && !light.told1) {
             light.told1 = true;
             var lp = [light.x - this.targetOffset[0], light.y - this.targetOffset[1] - 50];
-            (new messageBubble("Your (re)quest was successful, now you must find the exit", lp[0], lp[1], 7500, true)).show();
+            (new MessageBubble("Your (re)quest was successful, now you must find the exit", lp[0], lp[1], 7500, true)).show();
         }
     }
     pointInShadow(x, y) {
@@ -88,7 +89,6 @@ export class Map {
             })
             ctx.restore();
         }
-
 
         var len = this.windows.length;
         ctx.save();

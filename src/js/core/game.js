@@ -48,8 +48,11 @@ function createBrickTile (size, color) {
     ctx.fillRect(0, 0, 500, 500);
     return canvas;
 }        
-class Game {
-
+class Game {    
+    constructor() {
+        /**@type Level */
+        this.level = null 
+    }
 }
 //initialize the game
 Game.prototype.initialize = function() {
@@ -124,7 +127,7 @@ Game.prototype.initialize = function() {
                 document.querySelector("main").style.display = "none";
                 document.querySelector("#hud").style.display = "block";
                 title = false;
-                var level = new Level(ctx);
+                this.level = new Level(ctx);
                 if (!document.fullscreenElement) {
                     document.body.requestFullscreen();
                 } else {

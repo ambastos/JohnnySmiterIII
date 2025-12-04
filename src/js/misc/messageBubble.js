@@ -13,16 +13,16 @@ export class MessageBubble {
     show() {
         document.body.appendChild(this.speech);
         return new Promise((r) => {
-            var f = () => {
+            var callback = () => {
                 clearTimeout(timer);
-                document.removeEventListener('keydown', f);
-                document.removeEventListener('click', f);
+                document.removeEventListener('keydown', callback);
+                document.removeEventListener('click', callback);
                 document.body.removeChild(this.speech);
                 r();
             }
-            if (!this.nokey) document.addEventListener('keydown', f);
-            if (!this.nokey) document.addEventListener('click', f);
-            var timer = setTimeout(f, this.time);
+            if (!this.nokey) document.addEventListener('keydown', callback);
+            if (!this.nokey) document.addEventListener('click', callback);
+            var timer = setTimeout(callback, this.time);
 
         });
     }
