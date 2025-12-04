@@ -6,7 +6,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const isProduction = process.env.npm_lifecycle_event === 'build'
 
 module.exports = {
-  entry: './src',
+  entry: './src/js',
   devtool: !isProduction && 'source-map',
   module: {
     rules: [

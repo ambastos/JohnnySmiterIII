@@ -1,4 +1,4 @@
-export default class Particles{
+export class Particles{
     constructor(){
         this.width=2000;
         this.height=2000;
