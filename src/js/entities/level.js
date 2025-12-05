@@ -1,3 +1,4 @@
+
 import { KeyStates } from '../core/keyStates.js';
 import { MessageBubble } from '../misc/messageBubble.js';
 import { dead, twinkle } from '../misc/song.js';
@@ -20,7 +21,7 @@ export class Level {
 
         this.keyStates = new KeyStates;
         this.particles = new Particles;
-        this.lastTime = T;
+        this.lastTime = TIME;
         this.badFrame = 0;
         this.started = false;
         this.numbersCollected = 0;
@@ -54,6 +55,7 @@ export class Level {
             diag();
         }, 1000);
         this.loop();
+       // downloadCanvasAsImage(canvas, "game-canvas.png")
     }
     reset() {
         dead();
@@ -74,16 +76,77 @@ export class Level {
             hud.innerHTML = 'X X X';
         }, 2000)
     }
+    handleMergeApperance() {
+        var pos = this.player.bound;
+        var dx = pos.x - 50;
+        var dy = pos.y - 1850;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (!this.coiled && distance < 200) {
+            this.coiled = true;
+            var p = [200 - this.map.targetOffset[0], 1800 - this.map.targetOffset[1]];
+            var s = (document.monetization && document.monetization.state == "started") ?
+                "I'm the great mage Coil. I will grant you the ability to see your desire within the shadows" :
+                "I'm the great mage <a href=\"https://coil.com/\" target=\"_blank\">Coil</a>, cross my hands with silver and I will let you see your desire within the shadows.";
+            (new MessageBubble(s, p[0], p[1], 7500, true)).show();
+        }
+    }
     /**
      * This is the main loop, there is a player keypress manager
      * to controle de speed and direction 
      * and check collision
      */
     loop() {
-        T = performance.now();
+        TIME = performance.now();
         var ctx = this.ctx;
         ctx.save();
         ctx.scale(SCALE, SCALE);
+        
+        this.handlePlayerInputKeys();
+
+        this.map.checkCollisionsWithNumbers(this.player, this.light);
+
+        this.handleBadFrames();
+        var deltaTime = Math.max(0.5, Math.min(1, (TIME - this.lastTime) / 15));
+        this.lastTime = TIME;
+
+        this.tick(deltaTime);
+
+        this.map.setCenter(this.player.bound);
+        ctx.save();
+        this.map.setTranslation(ctx, 0.55 * deltaTime);
+
+        this.map.drawWithShadows(ctx, this.light, this.player);
+        this.light.draw(ctx);
+
+        if (this.player.isDead()) {
+            this.reset();
+        }
+
+        ctx.restore();
+        ctx.save();
+        this.map.setTranslation(ctx, 0);
+
+        this.particles.draw(ctx, this.map.offset, this.map.viewport);
+        ctx.restore();
+
+        this.handleMergeApperance()
+
+        var gameover = this.handleGameOver();
+
+        ctx.restore();
+        if (!gameover) requestAnimationFrame(this.loop.bind(this));
+
+        
+    }
+
+    tick(deltaTime) {
+        this.light.tick(0.55 * deltaTime);
+        this.particles.tick(0.015 * deltaTime);
+        this.player.tick(0.55 * deltaTime, this.map.shadowBoxes);
+    }
+
+    handlePlayerInputKeys() {
         //var stepSpeed=10;
         var stepSpeed = 30;
         var player = this.player;
@@ -100,57 +163,20 @@ export class Level {
             }
         }
         var speed = Math.sqrt(player.velocity[0] * player.velocity[0] + player.velocity[1] * player.velocity[1]);
-        this.player.man.mag = Math.min(0.85, Math.abs(speed) / stepSpeed* 0.5 + 0.5);
+        this.player.man.mag = Math.min(0.85, Math.abs(speed) / stepSpeed * 0.5 + 0.5);
+    }
 
-        this.map.checkCollitions(this.player, this.light);
-        var time = T;
-        if (time - this.lastTime > 15) {
+    handleBadFrames() {
+        if (TIME - this.lastTime > 15) {
             this.badFrame++;
             if (this.badFrame > 20) DOSHADOWS = false;
         } else {
             this.badFrame = Math.max(this.badFrame - 1, 0);
         }
-        var dt = Math.max(0.5, Math.min(1, (time - this.lastTime) / 15));
-        this.lastTime = time;
-        this.light.tick(0.55 * dt);
-        this.particles.tick(0.015 * dt);
-        this.player.tick(0.55 * dt, this.map.boxes);
+    }
 
-        this.map.setCenter(this.player.bound);
-        ctx.save();
-        this.map.setTranslation(ctx, 0.55 * dt);
-
-
-
-        this.map.drawWithShadows(ctx, this.light, this.player);
-        this.light.draw(ctx);
-
-        if (this.player.isDead()) {
-            this.reset();
-        }
-
-        ctx.restore();
-        ctx.save();
-        this.map.setTranslation(ctx, 0);
-
-        this.particles.draw(ctx, this.map.offset, this.map.viewport);
-        ctx.restore();
-
-
+    handleGameOver() {
         var pos = this.player.bound;
-        var dx = pos.x - 50;
-        var dy = pos.y - 1850;
-        var d = Math.sqrt(dx * dx + dy * dy);
-
-        if (!this.coiled && d < 200) {
-            this.coiled = true;
-            var p = [200 - this.map.targetOffset[0], 1800 - this.map.targetOffset[1]];
-            var s = (document.monetization && document.monetization.state == "started") ?
-                "I'm the great mage Coil. I will grant you the ability to see your desire within the shadows" :
-                "I'm the great mage <a href=\"https://coil.com/\" target=\"_blank\">Coil</a>, cross my hands with silver and I will let you see your desire within the shadows.";
-            (new MessageBubble(s, p[0], p[1], 7500, true)).show();
-        }
-
         var dx = pos.x - 1850;
         var dy = pos.y - 100;
         var d = Math.sqrt(dx * dx + dy * dy);
@@ -160,8 +186,27 @@ export class Level {
             endmessage.className = "show";
             gameover = true;
         }
-
-        ctx.restore();
-        if (!gameover) requestAnimationFrame(this.loop.bind(this));
+        return gameover;
     }
+}
+/**
+ * 
+ * @param {HTMLCanvasElement} canvas 
+ * @param {*} filename 
+ */
+function downloadCanvasAsImage(canvas, filename) {
+    // Convert the canvas to a data URL (default is PNG)
+    
+    const dataURL = canvas.toDataURL("image/png");
+
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.download = filename; // Set the desired file name
+    link.href = dataURL;      // Set the data URL as the link's target
+
+    // Programmatically click the link to trigger the download
+    link.click();
+
+    // Clean up the temporary link element
+    link.remove();
 }

@@ -1,4 +1,5 @@
- //class responsible to draw the messages(bubbles messages)
+
+//class responsible to draw the messages(bubbles messages)
 export class MessageBubble {
     constructor(text, x, y, time, nokey) {
         this.nokey = nokey;

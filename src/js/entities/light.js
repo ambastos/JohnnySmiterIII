@@ -1,3 +1,4 @@
+
 export class Light {
     constructor(x, y) {
         this.x = x;
@@ -14,12 +15,18 @@ export class Light {
         this.targetX = x;
         this.targetY = y;
     }
+    /**
+     * Draw the little light that iluminates the path of the player and create the 
+     * shadows path
+     * @param {CanvasRenderingContext2D} ctx 
+     */
     draw(ctx) {
         ctx.save();
-        var time = T;
+        var time = TIME;
+      //creates the effect to bounce left-right, up-down 
         var dx = Math.sin(time * 0.01) * 10;
         var dy = Math.sin(time * 0.015) * 10;
-        ctx.translate(this.x + dx, this.y + dy);
+         ctx.translate(this.x + dx, this.y + dy);
         var gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 15);
 
         // Add three color stops
@@ -32,18 +39,24 @@ export class Light {
         ctx.fill();
         ctx.restore();
     }
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} ctx 
+     */
     drawGlow(ctx) {
         ctx.save();
-        var time = T;
+        var time = TIME;
         var dx = Math.sin(time * 0.01) * 50;
         ctx.globalCompositeOperation = "hard-light";
+        //ctx.globalCompositeOperation = "screen";
         var gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, 800 + dx);
 
         // Add three color stops
         gradient.addColorStop(0, '#eef');
         gradient.addColorStop(.5, '#222');
         ctx.fillStyle = gradient;
-        ctx.fillRect(-10000, -10000, 20000, 20000);
+        //ctx.fillRect(-10000, -10000, 20000, 20000);
+        ctx.fillRect(-1000,-1000,3000,3000)
         ctx.restore();
     }
 }

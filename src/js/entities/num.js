@@ -1,3 +1,4 @@
+
 export class Num {
     constructor(x, y, number) {
         this.x = x;
@@ -6,8 +7,8 @@ export class Num {
     }
     draw(ctx) {
         ctx.save();
-        var n = T;
-        ctx.translate(this.x, this.y + Math.sin(n / 1000) * 20);
+        var time = TIME;
+        ctx.translate(this.x, this.y + Math.sin(time / 1000) * 20);
         ctx.fillStyle = "#977207";
         ctx.shadowBlur = canvas.height * 0.03;
         ctx.shadowColor = "#fff";

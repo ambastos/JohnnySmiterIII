@@ -4,13 +4,6 @@ import { Spider } from '../entities/spider.js';
 import { music } from '../misc/song.js';
 
 
-document.addEventListener("mousedown", () => {
-    if (!playing) {
-        playing = true; 
-        setTimeout(music, 1500);
-    }
-})
-
 //draw the bricks(walls of the game)
 function createBrickTile (size, color) {
 
@@ -52,6 +45,13 @@ class Game {
     constructor() {
         /**@type Level */
         this.level = null 
+        this.playing = false
+        document.addEventListener("mousedown", () => {
+        if (!this.playing) {
+            this.playing = true; 
+            setTimeout(music, 1500);
+        }
+})
     }
 }
 //initialize the game
@@ -76,15 +76,17 @@ Game.prototype.initialize = function() {
         var particles = new Particles();
         particles.width = innerWidth;
         particles.height = innerHeight;
+
         var title = true;
         var Spider1 = new Spider(0, 0, 0);
         var Spider2 = new Spider(0, 0, 0);
         var spiderScale = 1.5;
         var size = [particles.width, particles.height];
         var offset = [0, 0];
+        
         var animate = () => {
             if (title) {
-                T = performance.now();
+                TIME = performance.now();
                 var inset = 0.1 * canvas.width;
                 Spider1.height = canvas.height / SCALE * 0.8 / spiderScale;
                 Spider2.height = canvas.height / SCALE * 0.8 / spiderScale;
@@ -118,9 +120,8 @@ Game.prototype.initialize = function() {
             }
         };
         animate();
-        //buttom to start the game
+    //buttom to start the game
         document.querySelector("b").onclick = () => {
-
             overlay.className = "show";
             setTimeout(() => {
                 overlay.className = "";

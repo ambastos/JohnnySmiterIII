@@ -4,6 +4,13 @@ export class Spikes extends ShadowBox {
     constructor(x, y, width, height) {
         super(x, y, width, height);
     }
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} ctx 
+     * @param {[x:number,y:number]} offset 
+     * @param {[x:number, y:number]} size 
+     * @returns 
+     */
     draw(ctx, offset, size) {
         if (this.x + this.width < offset[0] || this.y + this.height < offset[1] || this.x > offset[0] + size[0] || this.y > offset[1] + size[1]) return;
         var cnt = Math.floor(this.width / 5);

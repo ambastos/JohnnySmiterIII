@@ -10,10 +10,10 @@ export class Player {
         this.floorNormal = [0, -1];
         this.onfloor = true;
         this.numbersCollected = 0;
-        this.start = T;
+        this.start = TIME;
     }
     tick(dt, shadowboxes) {
-        if (T - this.start > 5000) this.inShadow = this.map.pointInShadow(this.bound.x, this.bound.y);
+        if (TIME - this.start > 5000) this.inShadow = this.map.pointInShadow(this.bound.x, this.bound.y);
         if (this.inShadow) {
             this.velocity = [0, 0];
             return;

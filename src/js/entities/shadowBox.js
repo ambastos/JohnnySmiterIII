@@ -1,3 +1,5 @@
+import { Light } from "./light";
+
 export class ShadowBox {
     constructor(x, y, width, height) {
         this.x = x;
@@ -10,7 +12,11 @@ export class ShadowBox {
         this.projectPoints = [[0, 0], [0, 0], [0, 0], [0, 0]];
         this.paths = [];
     }
-    calcShadowAreas(light) {
+    /**
+     * 
+     * @param {Light} light 
+     */
+    calculateShadowAreas(light) {
         this.projectPoints = this.points.map((el, idx) => {
             var dx = el[0] - light.x;
             var dy = el[1] - light.y;
@@ -18,14 +24,19 @@ export class ShadowBox {
             return [dx / d * 10000 + el[0] * 0.1 + this.projectPoints[idx][0] * 0.9, dy / d * 10000 + el[1] * 0.1 + this.projectPoints[idx][1] * 0.9];
         })
     }
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} ctx 
+     */
     drawShadows(ctx) {
         ctx.save();
         //ctx.globalCompositeOperation ="luminosity";
         var points = this.points;
         var projectPoints = this.projectPoints;
         var len = points.length;
+
         this.paths = []
-        for (let i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {            
             var idx1 = i;
             var idx2 = (i + 1) % len;
             var path = new Path2D();
@@ -38,6 +49,8 @@ export class ShadowBox {
             ctx.stroke(path);
             this.paths.push(path)
         }
+        //test
+       
         ctx.restore();
     }
     drawPlatform(ctx, offset, size) {
